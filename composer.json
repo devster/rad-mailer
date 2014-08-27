@@ -1,0 +1,32 @@
+{
+    "name": "devster/rad-mailer",
+    "type": "symfony-bundle",
+    "description": "Symfony rad mailer",
+    "keywords": ["rad", "mailer"],
+    "homepage": "https://github.com/devster/rad-mailer",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jeremy Perret",
+            "email": "jeremy@devster.org"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">=5.3.3",
+        "symfony/options-resolver": "~2"
+    },
+    "require-dev": {
+        "twig/twig": "1.*",
+        "atoum/atoum": "dev-master",
+        "swiftmailer/swiftmailer": ">=4.2.0,~5.0"
+    },
+    "autoload": {
+        "psr-4": { "Rad\\": "src/" }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.0-dev"
+        }
+    }
+}
