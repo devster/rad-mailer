@@ -30,15 +30,17 @@ class Mailer
     /**
      * Constructor.
      */
-    public function __construct(\Swift_Mailer $mailer, \Twig_Environment $twig, $from = null)
+    public function __construct(\Swift_Mailer $mailer, \Twig_Environment $twig = null, $from = null)
     {
         $this->mailer = $mailer;
-        $this->twig   = clone $twig;
         $this->from   = $from;
 
         // configure twig to template string
-        $loader = new \Twig_Loader_Chain(array($this->twig->getLoader(), new \Twig_Loader_String));
-        $this->twig->setLoader($loader);
+        if ($twig) {
+            $this->twig   = clone $twig;
+            $loader = new \Twig_Loader_Chain(array($this->twig->getLoader(), new \Twig_Loader_String));
+            $this->twig->setLoader($loader);
+        }
     }
 
     /**
@@ -110,7 +112,11 @@ class Mailer
      */
     public function renderTwig($template, $data = array())
     {
-        return $this->twig->render($template, $data);
+        if ($this->twig) {
+            return $this->twig->render($template, $data);
+        }
+
+        return $template;
     }
 
     /**

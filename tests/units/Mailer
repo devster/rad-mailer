@@ -17,7 +17,7 @@ class Mailer extends \mageekguy\atoum\test
         return $twig;
     }
 
-    protected function createMailer()
+    protected function createMailer($noTwig = false)
     {
         $this->mockGenerator->orphanize('__construct');
         $sm = new \mock\Swift_Mailer;
@@ -25,9 +25,11 @@ class Mailer extends \mageekguy\atoum\test
             return $message;
         };
 
+        $twig = $noTwig ? null : $this->getTwig();
+
         $mailer = new M(
             $sm,
-            $this->getTwig(),
+            $twig,
             'test@example.com'
         );
 
@@ -48,11 +50,14 @@ class Mailer extends \mageekguy\atoum\test
      */
     public function testRenderTwig($template, $data, $result)
     {
-        $mailer = $this->createMailer();
+        $mailer       = $this->createMailer();
+        $noTwigMailer = $this->createMailer(true);
 
         $this
             ->string($mailer->renderTwig($template, $data))
                 ->isEqualTo($result)
+            ->string($noTwigMailer->renderTwig($template, $data))
+                ->isEqualTo($template)
         ;
     }
 
