@@ -3,6 +3,7 @@ RAD Mailer
 [![Build Status](https://travis-ci.org/devster/rad-mailer.svg)](https://travis-ci.org/devster/rad-mailer)
 [![Scrutinizer Code Quality](https://scrutinizer-ci.com/g/devster/rad-mailer/badges/quality-score.png?b=master)](https://scrutinizer-ci.com/g/devster/rad-mailer/?branch=master)
 [![Code Coverage](https://scrutinizer-ci.com/g/devster/rad-mailer/badges/coverage.png?b=master)](https://scrutinizer-ci.com/g/devster/rad-mailer/?branch=master)
+[![PHP version](https://badge.fury.io/ph/devster%2Frad-mailer.svg)](http://badge.fury.io/ph/devster%2Frad-mailer)
 
 **Send Twig templated email with Swiftmailer at speed of light. Dead simple.**
 
@@ -35,14 +36,20 @@ $mailer = new Rad\Mailer($swiftmailer, $twig, $from = 'john@example.com');
 
 // Send a simple email
 $nbEmailsSent = $mailer->send(array(
-    'from'      => 'bob@example.com', // Optional. By default the value set in the constructor.
-                                      // 'bob@example.com', array('bob@example.com' => 'Bob', ...)
-                                      // or an object (see more details below)
-    'to'        => 'robert@example.com', // Same as from
-    'subject'   => 'Hello {{name}}!', // A twig template as string or a twig file template (ex: email.html.twig)
-    'body'      => 'body.html.twig', // Same as subject
-    'data'      => array('name' => 'Rob'), // Optional. The data used in both templates subject and body
-    'body_type' => 'text/plain' // Optional, default: text/html. 'text/html' or 'text/plain'
+    // Optional. By default the value set in the constructor.
+    // 'bob@example.com', array('bob@example.com' => 'Bob', ...)
+    // or an object (see more details below)
+    'from'      => 'bob@example.com',
+    // Same as from
+    'to'        => 'robert@example.com',
+    // A twig template as string or a twig file template (ex: email.html.twig)
+    'subject'   => 'Hello {{name}}!',
+    // Same as subject
+    'body'      => 'body.html.twig',
+    // Optional. The data used in both templates subject and body
+    'data'      => array('name' => 'Rob'),
+    // Optional, default: text/html. 'text/html' or 'text/plain'
+    'body_type' => 'text/plain'
 ));
 
 // Send a more complex email
