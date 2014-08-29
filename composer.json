@@ -19,7 +19,8 @@
     "require-dev": {
         "twig/twig": "1.*",
         "atoum/atoum": "dev-master",
-        "swiftmailer/swiftmailer": ">=4.2.0,~5.0"
+        "swiftmailer/swiftmailer": ">=4.2.0,~5.0",
+        "silex/silex": "~1.2"
     },
     "autoload": {
         "psr-4": { "Rad\\": "src/" }
