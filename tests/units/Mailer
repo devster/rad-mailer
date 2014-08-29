@@ -108,27 +108,6 @@ class Mailer extends \mageekguy\atoum\test
         ;
     }
 
-    /**
-     * @dataProvider getUserData
-     */
-    public function testCreateMessage($data, $result)
-    {
-        $mailer = $this->createMailer();
-
-        if (is_string($result)) {
-            $result = array($result => null);
-        }
-
-        $this
-            ->object($m = $mailer->createMessage($data, $data))
-                ->isInstanceOf('\Swift_Message')
-            ->array($m->getFrom())
-                ->isEqualTo((array) $result)
-            ->array($m->getTo())
-                ->isEqualTo((array) $result)
-        ;
-    }
-
     public function testSendMessage()
     {
         $mailer = $this->createMailer();
@@ -243,6 +222,46 @@ class Mailer extends \mageekguy\atoum\test
     /**
      * @dataProvider getSendOptions
      */
+    public function testCreateMessage($throwException, array $data, array $excepted)
+    {
+        $mailer = $this->createMailer();
+
+        if ($throwException) {
+            $this
+                ->exception(function () use ($mailer, $data) {
+                    $mailer->createMessage($data);
+                })
+            ;
+        } else {
+
+            if (is_string($excepted['to'])) {
+                $excepted['to'] = array($excepted['to'] => null);
+            }
+
+            if (is_string($excepted['from'])) {
+                $excepted['from'] = array($excepted['from'] => null);
+            }
+
+            $this
+                ->if($m = $mailer->createMessage($data))
+                ->then
+                    ->string($m->getSubject())
+                        ->isEqualTo($excepted['subject'])
+                    ->string($m->getBody())
+                        ->isEqualTo($excepted['body'])
+                    ->array($m->getTo())
+                        ->isEqualTo($excepted['to'])
+                    ->array($m->getFrom())
+                        ->isEqualTo($excepted['from'])
+                    ->string($m->getContentType())
+                        ->isEqualTo($excepted['body_type'])
+            ;
+        }
+    }
+
+    /**
+     * @dataProvider getSendOptions
+     */
     public function testSend($throwException, array $data, array $excepted)
     {
         $mailer = $this->createMailer();
@@ -264,20 +283,20 @@ class Mailer extends \mageekguy\atoum\test
             }
 
             $this
-                ->if($r = $mailer->send($data))
+                ->if($m = $mailer->send($data))
                 ->then
                     ->mock($mailer->getMailer())
                         ->call('send')
                             ->once()
-                    ->string($r->getSubject())
-                        ->isEqualTo($excepted['subject'])
-                    ->string($r->getBody())
+                    ->string($m->getSubject())
+                            ->isEqualTo($excepted['subject'])
+                    ->string($m->getBody())
                         ->isEqualTo($excepted['body'])
-                    ->array($r->getTo())
+                    ->array($m->getTo())
                         ->isEqualTo($excepted['to'])
-                    ->array($r->getFrom())
+                    ->array($m->getFrom())
                         ->isEqualTo($excepted['from'])
-                    ->string($r->getContentType())
+                    ->string($m->getContentType())
                         ->isEqualTo($excepted['body_type'])
             ;
         }

@@ -46,21 +46,23 @@ class Mailer
     /**
      * Create and initialize a message
      *
-     * @param  object|array|string|null $fromUser
-     * @param  object|array|string|null $toUser
+     * @param array $options See self::getSendOptionsResolver for more details
      *
      * @return \Swift_Message
      */
-    public function createMessage($fromUser = null, $toUser = null)
+    public function createMessage(array $options = null)
     {
         $message = \Swift_Message::newInstance();
 
-        if ($fromUser) {
-            $message->setFrom($this->guessData($fromUser));
-        }
+        if ($options) {
+            $options = $this->getSendOptionsResolver()->resolve($options);
 
-        if ($toUser) {
-            $message->setTo($this->guessData($toUser));
+            $message
+                ->setFrom($this->guessData($options['from']))
+                ->setTo($this->guessData($options['to']))
+                ->setSubject($this->renderTwig($options['subject'], $options['data']))
+                ->setBody($this->renderTwig($options['body'], $options['data']), $options['body_type'])
+            ;
         }
 
         return $message;
@@ -128,13 +130,7 @@ class Mailer
      */
     public function send(array $options)
     {
-        $options = $this->getSendOptionsResolver()->resolve($options);
-
-        $message = $this->createMessage($options['from'], $options['to']);
-        $message
-            ->setSubject($this->renderTwig($options['subject'], $options['data']))
-            ->setBody($this->renderTwig($options['body'], $options['data']), $options['body_type'])
-        ;
+        $message = $this->createMessage($options);
 
         return $this->sendMessage($message);
     }
